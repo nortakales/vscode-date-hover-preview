@@ -1,11 +1,10 @@
 {
 	"name": "date-preview",
-	"displayName": "Date Preview",
-	"description": "Preview date time as your desired.",
+	"displayName": "Date Hover Preview",
+	"description": "Preview date timestamps in a little hover popup with configurable timezones",
 	"icon": "resources/icon.png",
 	"version": "1.0.0",
-	"publisher": "wxt2005",
-	"license": "MIT",
+	"publisher": "nortakales",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -20,10 +19,10 @@
 	"activationEvents": [
 		"onStartupFinished"
 	],
-	"main": "./dist/extension.js",
+	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
-			"title": "Date Preview",
+			"title": "Date Hover Preview",
 			"properties": {
 				"date-preview.detect.ISO-8601String": {
 					"type": "boolean",
@@ -33,7 +32,7 @@
 				"date-preview.detect.unixTime": {
 					"type": "boolean",
 					"default": true,
-					"description": "Whether to detect Unix time. Currently supports 10/13 digits."
+					"description": "Whether to detect Unix epoch time. Currently supports 9-10 digits (as seconds) or up to 14 digits (as milliseconds)"
 				},
 				"date-preview.primaryPreview.enable": {
 					"type": "boolean",
@@ -42,7 +41,7 @@
 				},
 				"date-preview.primaryPreview.name": {
 					"type": "string",
-					"default": "GMT",
+					"default": "Local",
 					"markdownDescription": "Show as the name of primary preview section."
 				},
 				"date-preview.primaryPreview.format": {
@@ -50,24 +49,32 @@
 					"markdownDescription": "Primary date preview format, described in [day.js format documentation](https://day.js.org/docs/en/display/format). Leave empty to use ISO-8601 format."
 				},
 				"date-preview.primaryPreview.utcOffset": {
-					"description": "UTC offset of primary preview timezone. If the input is between -16 and -16, it will be interpreted as hours, otherwise, minutes instead. Leave empty to use local timezone.",
+					"description": "UTC offset for the primary preview expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes)",
 					"type": [
 						"number",
 						null
 					]
 				},
-				"date-preview.alternativePreviews": {
+				"date-preview.primaryPreview.timezone": {
+					"description": "Timezone for the primary preview. Timezones are expressed like \"PST\" or \"America/Los_Angeles\". This setting will take precedence over Primary Preview: Utc Offset. If both are left blank this will use your local timezone.",
+					"type": [
+						"string",
+						null
+					]
+				},
+				"date-preview.additionalPreviews": {
 					"type": "array",
 					"minItems": 0,
+					"description": "Additional previews can be configured in settings.json. Use intellisense to discover possible fields.",
 					"items": {
 						"type": "object",
-						"title": "Alternative Preview",
+						"title": "Additional Preview",
 						"required": [
 							"name"
 						],
 						"properties": {
 							"name": {
-								"description": "Show as the name of alternative preview section.",
+								"description": "Show as the name of additional preview section.",
 								"type": "string"
 							},
 							"format": {
@@ -75,9 +82,16 @@
 								"type": "string"
 							},
 							"utcOffset": {
-								"description": "UTC offset of custom preview timezone. If the input is between -16 and -16, it will be interpreted as hours, otherwise, minutes instead. Leave empty to use local timezone.",
+								"description": "UTC offset expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes)",
 								"type": [
 									"number",
+									null
+								]
+							},
+							"timezone": {
+								"description": "Timezones are expressed like \"PST\" or \"America/Los_Angeles\". This setting will take precedence over utcOffset. If both are left blank this will use your local timezone.",
+								"type": [
+									"string",
 									null
 								]
 							}
@@ -89,31 +103,23 @@
 		"commands": []
 	},
 	"scripts": {
+		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"test": "node ./out/test/runTest.js",
-		"vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch",
-    "test-compile": "tsc -p ./"
+		"lint": "eslint src --ext ts"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.0",
-		"@types/node": "^14.0.27",
-		"@types/vscode": "^1.48.0",
-		"@typescript-eslint/eslint-plugin": "^3.8.0",
-		"@typescript-eslint/parser": "^3.8.0",
-		"eslint": "^7.6.0",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.53.0",
+		"@typescript-eslint/eslint-plugin": "^4.14.1",
+		"@typescript-eslint/parser": "^4.14.1",
+		"eslint": "^7.19.0",
 		"glob": "^7.1.6",
-		"mocha": "^8.0.1",
-		"ts-loader": "^8.0.11",
-		"typescript": "^3.8.3",
-		"vscode-test": "^1.4.0",
-		"webpack": "^5.9.0",
-		"webpack-cli": "^4.2.0"
+		"mocha": "^8.2.1",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0"
 	},
 	"dependencies": {
 		"dayjs": "^1.8.34"

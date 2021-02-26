@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import * as dayjs from 'dayjs';
 import * as utcPlugin from 'dayjs/plugin/utc';
+import * as timezonePlugin from 'dayjs/plugin/timezone';
 
 dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
+
   private dateRegexp = {
-    iso8601: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|\+\d{2}:\d{2})/,
+    iso8601: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|(\+|\-)\d{2}:\d{2})/,
     epoch: /\d{9,14}/
   };
 
@@ -17,25 +20,29 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
   get detectEpochEnabled(): boolean {
     return vscode.workspace.getConfiguration().get<boolean>('date-preview.detect.epochTimestamp', true);
   }
-
+  
   get primaryPreviewEnabled(): boolean {
     return vscode.workspace.getConfiguration().get<boolean>('date-preview.primaryPreview.enable', true);
   }
 
   get primaryPreviewName(): string {
-    return vscode.workspace.getConfiguration().get<string>('date-preview.primaryPreview.name', 'GMT');
+    return vscode.workspace.getConfiguration().get<string>('date-preview.primaryPreview.name', 'Local');
   }
 
   get primaryPreviewFormat(): string {
     return vscode.workspace.getConfiguration().get<string>('date-preview.primaryPreview.format', '');
   }
   
-  get primaryPreviewUtcOffset(): number {
-    return vscode.workspace.getConfiguration().get<number>('date-preview.primaryPreview.utcOffset', 0);
+  get primaryPreviewUtcOffset(): number | undefined {
+    return vscode.workspace.getConfiguration().get<number>('date-preview.primaryPreview.utcOffset');
   }
 
-  get alternativePreivews(): Array<IPreviewConfig> {
-    return vscode.workspace.getConfiguration().get<Array<IPreviewConfig>>('date-preview.alternativePreviews', []);
+  get primaryPreviewTimezone(): string | undefined{
+    return vscode.workspace.getConfiguration().get<string>('date-preview.primaryPreview.timezone');
+  }
+
+  get additionalPreivews(): Array<PreviewConfig> {
+    return vscode.workspace.getConfiguration().get<Array<PreviewConfig>>('date-preview.additionalPreviews', []);
   }
 
   provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
@@ -56,7 +63,7 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
 
       if (epochRange) {
         let hoveredWord = document.getText(epochRange);
-        // convert millonseconds to seconds
+        // convert seconds to milliseconds
         if (hoveredWord.length <= 10) {
           hoveredWord += '000';
         }
@@ -73,29 +80,38 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
   }
 
   buildPreviewMessage(date: dayjs.Dayjs): string {
-    let res = '';
-    const priveiwConfigs = [...this.alternativePreivews];
+    let message = '';
+    const previewConfigs = [...this.additionalPreivews];
 
     if (this.primaryPreviewEnabled) {
       const primaryPriviewConfig = {
         name: this.primaryPreviewName,
         format: this.primaryPreviewFormat,
         utcOffset: this.primaryPreviewUtcOffset,
+        timezone: this.primaryPreviewTimezone
       };
-      priveiwConfigs.unshift(primaryPriviewConfig);
+      previewConfigs.unshift(primaryPriviewConfig);
     }
 
-    for (const item of priveiwConfigs) {
+    for (const item of previewConfigs) {
       if (!item.name) {
         continue;
       }
 
-      const dateObj = typeof item.utcOffset === 'number' ? date.utcOffset(item.utcOffset) : date;
+      let dateObj: dayjs.Dayjs;
+      if(item.timezone) {
+        dateObj = date.tz(item.timezone);
+      } else if(item.utcOffset) {
+        dateObj = date.utcOffset(item.utcOffset);
+      } else {
+        dateObj = date.tz(dayjs.tz.guess());
+      }
+
       const dateStr = `${item.format ? dateObj.format(item.format) : dateObj.format()}`;
-      res += this.buildSinglePreviewItem(item.name, dateObj.format('Z'), dateStr);
+      message += this.buildSinglePreviewItem(item.name, dateObj.format('Z'), dateStr);
     }
 
-    return res;
+    return message;
   }
 
   buildSinglePreviewItem(name: string, utcOffsetStr: string, dateString: string): string {
@@ -103,7 +119,7 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
   }
   
   dispose() {
-    // no operation
+    // nothing to do
   }
 }
 
