@@ -9,7 +9,7 @@ Hoverable formats currently include:
 * [Unix Time](https://en.wikipedia.org/wiki/Unix_time) (9-10 digits as seconds/11-14 digits as milliseconds)
 * [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
 
-![Preview](resources/readme/dateHoverPreviewExample.png)
+![Preview](resources/readme/dateHoverPreviewExample.gif)
 
 ## Extension Settings
 
@@ -65,6 +65,6 @@ Customizable detection formats
 
 ## Release Notes
 
-### 1.0.0
+### 1.0.1
 
 Initial release

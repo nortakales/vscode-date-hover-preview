@@ -3,10 +3,10 @@
 	"displayName": "Date Hover Preview",
 	"description": "Preview date timestamps in a little hover popup with configurable timezones and formats",
 	"icon": "resources/date-hover-preview-icon.png",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "nortakales",
 	"engines": {
-		"vscode": "^1.48.0"
+		"vscode": "^1.53.0"
 	},
 	"repository": {
 		"type": "git",
