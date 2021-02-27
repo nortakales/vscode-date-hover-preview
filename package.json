@@ -1,8 +1,8 @@
 {
-	"name": "date-preview",
+	"name": "date-hover-preview",
 	"displayName": "Date Hover Preview",
-	"description": "Preview date timestamps in a little hover popup with configurable timezones",
-	"icon": "resources/icon.png",
+	"description": "Preview date timestamps in a little hover popup with configurable timezones and formats",
+	"icon": "resources/date-hover-preview-icon.png",
 	"version": "1.0.0",
 	"publisher": "nortakales",
 	"engines": {
@@ -10,9 +10,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wxt2005/vscode-date-preview"
+		"url": "https://github.com/nortakales/vscode-date-hover-preview"
 	},
-	"homepage": "https://github.com/wxt2005/vscode-date-preview/blob/master/README.md",
+	"homepage": "https://github.com/nortakales/vscode-date-hover-preview",
 	"categories": [
 		"Other"
 	],
@@ -24,48 +24,43 @@
 		"configuration": {
 			"title": "Date Hover Preview",
 			"properties": {
-				"date-preview.detect.ISO-8601String": {
+				"date-hover-preview.detect.ISO-8601String": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Whether to detect [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format date string."
+					"markdownDescription": "Whether to detect [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format date string when hovering."
 				},
-				"date-preview.detect.unixTime": {
+				"date-hover-preview.detect.unixTime": {
 					"type": "boolean",
 					"default": true,
-					"description": "Whether to detect Unix epoch time. Currently supports 9-10 digits (as seconds) or up to 14 digits (as milliseconds)"
+					"markdownDescription": "Whether to detect Unix epoch time when hovering. Currently supports 9-10 digits (as seconds) or up to 14 digits (as milliseconds)."
 				},
-				"date-preview.primaryPreview.enable": {
+				"date-hover-preview.primaryPreview.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "Show primary date preview."
+					"markdownDescription": "Show primary date preview."
 				},
-				"date-preview.primaryPreview.name": {
+				"date-hover-preview.primaryPreview.name": {
 					"type": "string",
 					"default": "Local",
 					"markdownDescription": "Show as the name of primary preview section."
 				},
-				"date-preview.primaryPreview.format": {
+				"date-hover-preview.primaryPreview.format": {
 					"type": "string",
 					"markdownDescription": "Primary date preview format, described in [day.js format documentation](https://day.js.org/docs/en/display/format). Leave empty to use ISO-8601 format."
 				},
-				"date-preview.primaryPreview.utcOffset": {
-					"description": "UTC offset for the primary preview expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes)",
-					"type": [
-						"number",
-						null
-					]
+				"date-hover-preview.primaryPreview.utcOffset": {
+					"markdownDescription": "UTC offset for the primary preview expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes).",
+					"type": ["number", null],
+					"default": null
 				},
-				"date-preview.primaryPreview.timezone": {
-					"description": "Timezone for the primary preview. Timezones are expressed like \"PST\" or \"America/Los_Angeles\". This setting will take precedence over Primary Preview: Utc Offset. If both are left blank this will use your local timezone.",
-					"type": [
-						"string",
-						null
-					]
+				"date-hover-preview.primaryPreview.timezone": {
+					"markdownDescription": "Timezone for the primary preview. Timezones are expressed like \"America/Los_Angeles\". This setting will take precedence over `#date-hover-preview.primaryPreview.utcOffset#`. If both are left blank this will use your local timezone. For a list of timezones, see the [TZ database name column](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
+					"type": "string"
 				},
-				"date-preview.additionalPreviews": {
+				"date-hover-preview.additionalPreviews": {
 					"type": "array",
 					"minItems": 0,
-					"description": "Additional previews can be configured in settings.json. Use intellisense to discover possible fields.",
+					"markdownDescription": "Additional previews can be configured in settings.json. Use intellisense to discover possible fields.",
 					"items": {
 						"type": "object",
 						"title": "Additional Preview",
@@ -74,26 +69,20 @@
 						],
 						"properties": {
 							"name": {
-								"description": "Show as the name of additional preview section.",
+								"description": "Show as the name of this additional preview.",
 								"type": "string"
 							},
 							"format": {
-								"description": "Used to format preivew display. Leave empty to use ISO-8601 format.",
+								"description": "Used to format preview display. Leave empty to use ISO-8601 format.",
 								"type": "string"
 							},
 							"utcOffset": {
-								"description": "UTC offset expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes)",
-								"type": [
-									"number",
-									null
-								]
+								"description": "UTC offset expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes).",
+								"type": "number"
 							},
 							"timezone": {
-								"description": "Timezones are expressed like \"PST\" or \"America/Los_Angeles\". This setting will take precedence over utcOffset. If both are left blank this will use your local timezone.",
-								"type": [
-									"string",
-									null
-								]
+								"description": "Timezones are expressed like \"America/Los_Angeles\". This setting will take precedence over utcOffset. If both are left blank this will use your local timezone.",
+								"type": "string"
 							}
 						}
 					}

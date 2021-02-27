@@ -1,6 +1,6 @@
 interface PreviewConfig {
-  name: string;
-  format?: string;
-  utcOffset?: number;
-  timezone?: string;
+    name: string;
+    format?: string;
+    utcOffset?: number;
+    timezone?: string;
 }
