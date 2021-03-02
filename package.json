@@ -3,7 +3,7 @@
 	"displayName": "Date Hover Preview",
 	"description": "Preview date timestamps in a little hover popup with configurable timezones and formats",
 	"icon": "resources/date-hover-preview-icon.png",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"publisher": "nortakales",
 	"engines": {
 		"vscode": "^1.53.0"
@@ -98,7 +98,9 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"lint": "eslint src --ext ts"
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
@@ -114,6 +116,6 @@
 		"vscode-test": "^1.5.0"
 	},
 	"dependencies": {
-		"dayjs": "^1.8.34"
+		"dayjs": "^1.10.4"
 	}
 }
