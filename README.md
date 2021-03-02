@@ -63,8 +63,4 @@ Customizable detection formats
 
 ## Known Issues
 
-## Release Notes
-
-### 1.0.1
-
-Initial release
+None

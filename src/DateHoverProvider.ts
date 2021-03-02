@@ -6,9 +6,13 @@ import * as timezonePlugin from 'dayjs/plugin/timezone';
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
 
-class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
+class DateHoverProvider implements vscode.HoverProvider {
 
     private logger = vscode.window.createOutputChannel("DateHoverPreview");
+
+    public constructor() {
+        this.log("DateHoverProvider activated")
+    }
 
     private dateRegex = {
         iso8601: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|(\+|\-)\d{2}:\d{2})/,
@@ -76,6 +80,7 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
 
         let previewMessage = '';
         if (date !== undefined && (date as dayjs.Dayjs).isValid()) {
+            this.log("Detected date, providing hover preview");
             previewMessage = this.buildPreviewMessage(date);
         }
 
@@ -108,8 +113,6 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
             if(item.timezone) {
                 dateInTimezone = date.tz(item.timezone);
             } else if(item.utcOffset != undefined) {
-                this.log(typeof item.utcOffset);
-                this.log(item.utcOffset + "");
                 dateInTimezone = date.utcOffset(item.utcOffset);
             } else {
                 dateInTimezone = date.tz(dayjs.tz.guess());
@@ -128,10 +131,6 @@ class DateHoverProvider implements vscode.HoverProvider, vscode.Disposable {
 
     private log(string: string) {
         this.logger.appendLine(string);
-    }
-    
-    dispose() {
-        // nothing to do
     }
 }
 

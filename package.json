@@ -3,7 +3,7 @@
 	"displayName": "Date Hover Preview",
 	"description": "Preview date timestamps in a little hover popup with configurable timezones and formats",
 	"icon": "resources/date-hover-preview-icon.png",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "nortakales",
 	"engines": {
 		"vscode": "^1.53.0"
@@ -17,7 +17,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onStartupFinished"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -50,7 +50,10 @@
 				},
 				"date-hover-preview.primaryPreview.utcOffset": {
 					"markdownDescription": "UTC offset for the primary preview expressed as a number of hours between -16 and 16 (any number outside of that range will be interpreted as minutes).",
-					"type": ["number", null],
+					"type": [
+						"number",
+						null
+					],
 					"default": null
 				},
 				"date-hover-preview.primaryPreview.timezone": {
