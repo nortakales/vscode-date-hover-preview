@@ -2,9 +2,12 @@ import * as vscode from 'vscode';
 import * as dayjs from 'dayjs';
 import * as utcPlugin from 'dayjs/plugin/utc';
 import * as timezonePlugin from 'dayjs/plugin/timezone';
+import * as advancedFormat from 'dayjs/plugin/advancedFormat';
+
 
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
+dayjs.extend(advancedFormat);
 
 class DateHoverProvider implements vscode.HoverProvider {
 
